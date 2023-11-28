@@ -1,7 +1,7 @@
 ﻿using SejmCalendar.Library.DataAccess;
 
 namespace SejmCalendar.Library;
-public class BirthdayService
+public class BirthdayService : IBirthdayService
 {
     public List<SejmMPRecord> SejmMPs { get; set; } = new();
 
@@ -33,6 +33,6 @@ public class BirthdayService
 
     public List<SejmMPRecord> GetMPsByBirthday(DateTime date)
     {
-        return GetMPsByBirthday (date.Month, date.Day);
+        return GetMPsByBirthday(date.Month, date.Day);
     }
 }
