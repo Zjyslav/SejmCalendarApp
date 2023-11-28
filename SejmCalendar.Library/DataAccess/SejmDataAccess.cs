@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace SejmCalendar.Library.DataAccess;
-public class SejmDataAccess
+public class SejmDataAccess : ISejmDataAccess
 {
     private readonly HttpClient _httpClient;
 
