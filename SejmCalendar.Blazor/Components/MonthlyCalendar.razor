@@ -1,0 +1,144 @@
+﻿@using SejmCalendar.Blazor.Models
+@using SejmCalendar.Library
+@using System.Globalization
+@inject IBirthdayService birthdayService
+@rendermode InteractiveServer
+
+<div class="container rounded bg-light p-4" data-bs-theme="light">
+    <div class="row">
+        <div class="col-1 d-none d-md-block">
+            <button class="btn btn-outline-dark w-100" @onclick="PreviousMonth">
+                <span class="bi bi-arrow-left display-3" />
+            </button>            
+        </div>
+        <div class="col-md-5">
+            @if (days.Count > 0)
+            {
+                <h2 class="display-3 text-center text-uppercase text-dark">@days.First().Date.ToString("MMMM yyyy")</h2>
+            }
+        </div>
+        <div class="col-1 d-none d-md-block">
+            <button class="btn btn-outline-dark w-100" @onclick="NextMonth">
+                <span class="bi bi-arrow-right display-3" />
+            </button>
+        </div>
+    </div>
+    
+    <div class="row text-center d-none d-xl-flex">
+        <div class="col-xl-1 p-2">
+            <div class="rounded bg-secondary py-2 text-uppercase text-light">poniedziałek</div>
+        </div>
+        <div class="col-xl-1 p-2">
+            <div class="rounded bg-secondary py-2 text-uppercase text-light">wtorek</div>
+        </div>
+        <div class="col-xl-1 p-2">
+            <div class="rounded bg-secondary py-2 text-uppercase text-light">środa</div>
+        </div>
+        <div class="col-xl-1 p-2">
+            <div class="rounded bg-secondary py-2 text-uppercase text-light">czwartek</div>
+        </div>
+        <div class="col-xl-1 p-2">
+            <div class="rounded bg-secondary py-2 text-uppercase text-light">piątek</div>
+        </div>
+        <div class="col-xl-1 p-2">
+            <div class="rounded bg-secondary py-2 text-uppercase text-light">sobota</div>
+        </div>
+        <div class="col-xl-1 p-2">
+            <div class="rounded bg-secondary py-2 text-uppercase text-light">niedziela</div>
+        </div>
+    </div>
+    <div class="row">
+        @foreach(var day in days)
+        {        
+            <div class="col-xl-1 my-2 @((day.Date.Day == 1) && ((int)day.Date.DayOfWeek > 1) ? $"offset-xl-{(int)day.Date.DayOfWeek - 1}": "" )">
+                <div class="card h-100">
+                    <div class="card-header display-3 text-center fw-bold">
+                        @day.Date.Day
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title text-center d-none">@day.Date.ToString("dddd")</div>
+                        <div class="small">
+                            <ul class="list-group">
+                                @foreach (var mp in day.SejmMPs)
+                                {
+                                    <li class="list-group-item">@mp.LastFirstName</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>                    
+                </div>
+            </div>    
+        }
+    </div>
+</div>
+
+@code {
+    public string message = "";
+
+    [Parameter]
+    public int Year { get; set; } = DateTime.Now.Year;
+    [Parameter]
+    public int Month { get; set; } = DateTime.Now.Month;
+    [Parameter]
+    public int Term { get; set; }
+
+    List<DayModel> days = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Term != 0 && birthdayService.SejmMPs.Count == 0)
+        {
+            await birthdayService.LoadSejmMPsByTermId(Term);
+        }
+
+        GenerateDays();
+
+        await base.OnParametersSetAsync();
+    }
+
+    private void GenerateDays()
+    {
+        days.Clear();
+        DateTime firstDay = new DateTime(Year, Month, 1);
+        int dayCount = DateTime.DaysInMonth(Year, Month);
+
+        for (int i = 0; i < dayCount; i++)
+        {
+            var date = new DateTime(Year, Month, 1 + i);
+            DayModel day = new()
+            {
+                Date = date,
+                SejmMPs = birthdayService.GetMPsByBirthday(date)
+            };
+            days.Add(day);
+        }
+    }
+
+    private void PreviousMonth()
+    {
+        if (Month == 1)
+        {
+            Month = 12;
+            Year--;
+        }
+        else
+        {
+            Month--;
+        }
+        GenerateDays();
+    }
+
+    private void NextMonth()
+    {
+        if (Month == 12)
+        {
+            Month = 1;
+            Year++;
+        }
+        else
+        {
+            Month++;
+        }
+        GenerateDays();
+    }
+}
