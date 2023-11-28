@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using System.Net.Http;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 
 namespace SejmCalendar.Library.DataAccess;
 public class SejmDataAccess : ISejmDataAccess
