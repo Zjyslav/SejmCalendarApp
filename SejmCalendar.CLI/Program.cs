@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SejmCalendar.Library;
 using SejmCalendar.Library.DataAccess;
 
 var builder = Host.CreateDefaultBuilder(args)
@@ -11,6 +12,7 @@ var builder = Host.CreateDefaultBuilder(args)
         {
             client.BaseAddress = new Uri(config.GetValue<string>("API:Sejm:BaseUrl") ?? "");
         });
+        services.AddSingleton<IBirthdayService, BirthdayService>();
     });
 
 var host =  builder.Build();
