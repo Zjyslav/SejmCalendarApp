@@ -20,6 +20,7 @@ public class BirthdayService : IBirthdayService
     public async Task LoadSejmMPsByTermId(int termId)
     {
         SejmMPs = await _dataAccess.GetAllMPsByTermId(termId);
+        SortMPsByBirthday();
     }
 
     public List<SejmMPRecord> GetMPsByBirthday(int month, int day)
@@ -34,5 +35,13 @@ public class BirthdayService : IBirthdayService
     public List<SejmMPRecord> GetMPsByBirthday(DateTime date)
     {
         return GetMPsByBirthday(date.Month, date.Day);
+    }
+
+    private void SortMPsByBirthday()
+    {
+        SejmMPs = SejmMPs
+            .OrderBy(x => x.BirthDate.Day)
+            .OrderBy(x => x.BirthDate.Month)
+            .ToList();
     }
 }
