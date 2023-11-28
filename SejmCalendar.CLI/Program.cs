@@ -7,8 +7,7 @@ var builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
         var config = context.Configuration;
-        services.AddSingleton<SejmDataAccess>();
-        services.AddHttpClient<SejmDataAccess>(client =>
+        services.AddHttpClient<ISejmDataAccess, SejmDataAccess>(client =>
         {
             client.BaseAddress = new Uri(config.GetValue<string>("API:Sejm:BaseUrl") ?? "");
         });
