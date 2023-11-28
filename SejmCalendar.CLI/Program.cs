@@ -18,3 +18,19 @@ var builder = Host.CreateDefaultBuilder(args)
 var host =  builder.Build();
 
 await host.StartAsync();
+
+var birthdayService = host.Services.GetRequiredService<IBirthdayService>();
+var terms = await birthdayService.GetAvailableTerms();
+foreach (var term in terms)
+{
+    Console.WriteLine($"Term {term.Num}:");
+    await birthdayService.LoadSejmMPsByTermId(term.Num);
+
+    foreach (var mp in birthdayService.SejmMPs)
+    {
+        Console.WriteLine($"{mp.BirthDate.ToString("yyyy.MM.dd")} {mp.LastFirstName}");
+    }
+
+    Console.WriteLine("-----------");
+    Console.WriteLine();
+}
