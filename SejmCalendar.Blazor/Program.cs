@@ -1,10 +1,19 @@
 using SejmCalendar.Blazor.Components;
+using SejmCalendar.Library;
+using SejmCalendar.Library.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddHttpClient<ISejmDataAccess, SejmDataAccess>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("API:Sejm:BaseUrl") ?? "");
+});
+builder.Services.AddSingleton<IBirthdayService, BirthdayService>();
+
 
 var app = builder.Build();
 
