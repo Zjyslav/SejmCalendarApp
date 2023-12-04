@@ -13,7 +13,7 @@ builder.Services.AddHttpClient<ISejmDataAccess, SejmDataAccess>(client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("API:Sejm:BaseUrl") ?? "");
 });
 builder.Services.AddSingleton<IBirthdayService, BirthdayService>();
-
+builder.Services.AddScoped<IDateService, DateService>();
 
 var app = builder.Build();
 
