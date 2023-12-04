@@ -21,6 +21,13 @@ public class SejmDataAccess : ISejmDataAccess
         List<SejmMPRecord>? output = await _httpClient.GetFromJsonAsync<List<SejmMPRecord>>($"sejm/term{termId}/MP");
         return output ?? new();
     }
+
+    public async Task<byte[]?> GetMpPhoto(int mpId, int termId)
+    {
+        byte[]? output = await _httpClient.GetByteArrayAsync($"sejm/term{termId}/MP/{mpId}/photo");
+
+        return output;
+    }
 }
 
 #region records
