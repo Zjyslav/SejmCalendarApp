@@ -1,6 +1,7 @@
 ﻿@using SejmCalendar.Blazor.Models
 @using SejmCalendar.Library
 @using SejmCalendar.Library.DataAccess
+@using System.Globalization
 @inject IBirthdayService birthdayService
 @inject IDateService dateService
 @inject ILogger<TodayPanel> logger
@@ -14,7 +15,7 @@
             </button>
         </div>
         <div class="col-md-5">
-            <h2 class="display-5 text-center text-uppercase">@dateService.Date.ToString("d MMMM yyyy")</h2>
+            <h2 class="display-5 text-center text-uppercase">@dateService.Date.ToString("d MMMM yyyy", culture)</h2>
         </div>
         <div class="col-1 d-none d-md-block">
             <button class="btn btn-outline-dark w-100" @onclick="NextDay">
@@ -70,6 +71,8 @@
     List<(SejmMPRecord record, string? photo)> mps = new();
 
     bool loading = true;
+
+    CultureInfo culture = new("pl-PL");
 
     protected override async Task OnParametersSetAsync()
     {

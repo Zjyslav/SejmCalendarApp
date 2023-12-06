@@ -16,7 +16,7 @@
         <div class="col-md-5">
             @if (days.Count > 0)
             {
-                <h2 class="display-5 text-center text-uppercase text-dark">@days.First().Date.ToString("MMMM yyyy")</h2>
+                <h2 class="display-5 text-center text-uppercase text-dark">@days.First().Date.ToString("MMMM yyyy", culture)</h2>
             }
         </div>
         <div class="col-1 d-none d-md-block">
@@ -81,6 +81,8 @@
 
     int month;
     int year;
+
+    CultureInfo culture = new("pl-PL");
 
     protected override async Task OnParametersSetAsync()
     {
