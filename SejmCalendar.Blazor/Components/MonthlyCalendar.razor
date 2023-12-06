@@ -2,13 +2,14 @@
 @using SejmCalendar.Library
 @using System.Globalization
 @inject IBirthdayService birthdayService
+@inject IDateService dateService
 @rendermode InteractiveServer
 
 <div class="container rounded bg-light p-4" data-bs-theme="light">
     <div class="row">
         <div class="col-1 d-none d-md-block">
             <button class="btn btn-outline-dark w-100" @onclick="PreviousMonth">
-                <span class="bi bi-arrow-left display-3" />
+                <span class="bi bi-arrow-left display-5" />
             </button>            
         </div>
         <div class="col-md-5">
@@ -19,7 +20,7 @@
         </div>
         <div class="col-1 d-none d-md-block">
             <button class="btn btn-outline-dark w-100" @onclick="NextMonth">
-                <span class="bi bi-arrow-right display-3" />
+                <span class="bi bi-arrow-right display-5" />
             </button>
         </div>
     </div>
@@ -50,8 +51,10 @@
     <div class="row">
         @foreach(var day in days)
         {        
-            <div class="col-xl-1 my-2 @((day.Date.Day == 1) && ((int)day.Date.DayOfWeek > 1) ? $"offset-xl-{(int)day.Date.DayOfWeek - 1}": "" )">
-                <div class="card h-100">
+            <div class="col-xl-1 my-2 
+                        @((day.Date.Day == 1) && ((int)day.Date.DayOfWeek > 1) ? $"offset-xl-{(int)day.Date.DayOfWeek - 1}": "" )
+                        @((day.Date.Date == dateService.Date.Date) ? "bg-danger" : "")">
+                <div role="button" class="card h-100" @onclick="() => SetDate(day.Date)">
                     <div class="card-header display-3 text-center fw-bold">
                         @day.Date.Day
                     </div>
@@ -73,19 +76,21 @@
 </div>
 
 @code {
-    public string message = "";
-
-    [Parameter]
-    public int Year { get; set; } = DateTime.Now.Year;
-    [Parameter]
-    public int Month { get; set; } = DateTime.Now.Month;
     [Parameter]
     public int Term { get; set; }
 
     List<DayModel> days = new();
 
+    int month;
+    int year;
+
     protected override async Task OnParametersSetAsync()
     {
+        month = dateService.Date.Month;
+        year = dateService.Date.Year;
+
+        dateService.OnDateChange += GenerateDays;
+
         if (Term != 0 && birthdayService.SejmMPs.Count == 0)
         {
             await birthdayService.LoadSejmMPsByTermId(Term);
@@ -96,15 +101,29 @@
         await base.OnParametersSetAsync();
     }
 
-    private void GenerateDays()
+    private void GenerateDays() => GenerateDays(true);
+
+    private void GenerateDays(bool useDateService = true)
     {
+        if (days.Count != 0 && dateService.Date.Year == year && dateService.Date.Month == month)
+        {
+            StateHasChanged();
+            return;
+        }
+
+        if (useDateService == true)
+        {
+        month = dateService.Date.Month;
+        year = dateService.Date.Year;
+        }        
+
         days.Clear();
-        DateTime firstDay = new DateTime(Year, Month, 1);
-        int dayCount = DateTime.DaysInMonth(Year, Month);
+        DateTime firstDay = new DateTime(year, month, 1);
+        int dayCount = DateTime.DaysInMonth(year, month);
 
         for (int i = 0; i < dayCount; i++)
         {
-            var date = new DateTime(Year, Month, 1 + i);
+            var date = new DateTime(year, month, 1 + i);
             DayModel day = new()
             {
                 Date = date,
@@ -112,33 +131,39 @@
             };
             days.Add(day);
         }
+
+        StateHasChanged();
     }
 
     private void PreviousMonth()
     {
-        if (Month == 1)
+        if (month == 1)
         {
-            Month = 12;
-            Year--;
+            month = 12;
+            year--;
         }
         else
         {
-            Month--;
+            month--;
         }
-        GenerateDays();
+        GenerateDays(false);
     }
 
     private void NextMonth()
     {
-        if (Month == 12)
+        if (month == 12)
         {
-            Month = 1;
-            Year++;
+            month = 1;
+            year++;
         }
         else
         {
-            Month++;
+            month++;
         }
-        GenerateDays();
+        GenerateDays(false);
     }
+    private void SetDate(DateTime date)
+    {
+        dateService.SetDate(date);
+    }    
 }
