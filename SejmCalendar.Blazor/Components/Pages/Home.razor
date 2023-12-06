@@ -1,0 +1,16 @@
+﻿@page "/"
+
+<PageTitle>Kalendarz Sejmowych Urodzin</PageTitle>
+<div class="container">
+    <header class="text-center">
+        <h1 class="display-1">Kalendarz Sejmowych Urodzin</h1>
+        <p class="lead text-muted">Sprawdź kiedy mają urodziny twoi ulubieni posłowie i posłanki</p>
+    </header>
+    <main>
+        <TodayPanel Term="10"/>
+        <MonthlyCalendar Term="10"/>
+    </main>
+    <footer class="text-center text-muted">
+        <small>&copy;@DateTime.Now.Year Zjyslav | <a href="https://github.com/Zjyslav">Github</a></small>
+    </footer>
+</div>

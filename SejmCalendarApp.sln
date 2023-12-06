@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SejmCalendar.Library", "SejmCalendar.Library\SejmCalendar.Library.csproj", "{AE37E94B-3A94-4251-97D1-9320697E6A11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SejmCalendar.Library", "SejmCalendar.Library\SejmCalendar.Library.csproj", "{AE37E94B-3A94-4251-97D1-9320697E6A11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SejmCalendar.CLI", "SejmCalendar.CLI\SejmCalendar.CLI.csproj", "{5A107023-C21A-4EF0-923F-0B1ABFED9816}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SejmCalendar.CLI", "SejmCalendar.CLI\SejmCalendar.CLI.csproj", "{5A107023-C21A-4EF0-923F-0B1ABFED9816}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SejmCalendar.Blazor", "SejmCalendar.Blazor\SejmCalendar.Blazor.csproj", "{D1BE5ED6-9325-4CE7-96B1-C6FA0AC33FE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{5A107023-C21A-4EF0-923F-0B1ABFED9816}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A107023-C21A-4EF0-923F-0B1ABFED9816}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A107023-C21A-4EF0-923F-0B1ABFED9816}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1BE5ED6-9325-4CE7-96B1-C6FA0AC33FE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1BE5ED6-9325-4CE7-96B1-C6FA0AC33FE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1BE5ED6-9325-4CE7-96B1-C6FA0AC33FE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1BE5ED6-9325-4CE7-96B1-C6FA0AC33FE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

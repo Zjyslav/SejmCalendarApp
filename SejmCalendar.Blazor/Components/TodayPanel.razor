@@ -1,0 +1,119 @@
+﻿@using SejmCalendar.Blazor.Models
+@using SejmCalendar.Library
+@using SejmCalendar.Library.DataAccess
+@inject IBirthdayService birthdayService
+@inject IDateService dateService
+@rendermode InteractiveServer
+
+<div class="container rounded bg-light p-4 my-4 text-dark" data-bs-theme="light">
+    <div class="row">
+        <div class="col-1 d-none d-md-block">
+            <button class="btn btn-outline-dark w-100" @onclick="PreviousDay">
+                <span class="bi bi-arrow-left display-5" />
+            </button>
+        </div>
+        <div class="col-md-5">
+            <h2 class="display-5 text-center text-uppercase">@dateService.Date.ToString("d MMMM yyyy")</h2>
+        </div>
+        <div class="col-1 d-none d-md-block">
+            <button class="btn btn-outline-dark w-100" @onclick="NextDay">
+                <span class="bi bi-arrow-right display-5" />
+            </button>
+        </div>
+    </div>
+    @if (loading == true)
+    {
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+    else if(mps.Count == 0)
+    {
+        <p class="text-center">
+            @((dateService.Date.Date == DateTime.Now.Date) ? "Dziś" : "Tego dnia") urodzin nie obchodzi żaden poseł lub posłanka Sejmu RP <span>@Term</span>. kadencji.
+        </p>
+    }
+    else
+    {
+        <p class="text-center">
+            @((dateService.Date.Date == DateTime.Now.Date) ? "Dziś" : "Tego dnia") urodziny obchodzą:
+            <div class="text-center d-lg-flex justify-content-center flex-wrap">
+                @foreach(var mp in mps)
+                {
+                    <div class="rounded bg-white shadow d-flex flex-row mx-4 my-3">
+                        <img class="rounded-start" src="@mp.photo" alt="@mp.record.FirstLastName"/>
+                        <div class="d-inline mx-3 pt-2 w-100">
+                            <p class="h4 text-center">@mp.record.FirstLastName</p>
+                            <p>@mp.record.BirthDate.AgeToday().AgeText()</p>
+                            @if(String.IsNullOrWhiteSpace(mp.record.Email) == false && dateService.Date.Date == DateTime.Now.Date)
+                            {
+                                <a role="button" class="btn btn-primary" href="@($"mailto:{mp.record.Email}")">
+                                    Złóż życzenia
+                                </a>
+                            }
+                        </div>
+                        
+                    </div>
+                }
+            </div>
+        </p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Term { get; set; }
+
+    List<(SejmMPRecord record, string? photo)> mps = new();
+
+    bool loading = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        dateService.OnDateChange += LoadBirthdays;
+
+        if (Term != 0 && birthdayService.SejmMPs.Count == 0)
+        {
+            await birthdayService.LoadSejmMPsByTermId(Term);
+        }
+
+        LoadBirthdays();
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async void LoadBirthdays()
+    {
+        mps.Clear();
+        loading = true;
+        StateHasChanged();
+
+        List<(SejmMPRecord record, string? photo)> output = new();
+
+        var mpsList = birthdayService.GetMPsByBirthday(dateService.Date);
+
+        foreach (var mp in mpsList)
+        {
+            var photo = await birthdayService.GetMPPhotoString(mp);
+            output.Add((mp, photo));
+        }
+
+        mps = output;
+
+        loading = false;
+
+        StateHasChanged();
+    }
+
+    private void NextDay()
+    {
+        dateService.AddDays(1);
+    }
+
+    private void PreviousDay()
+    {
+        dateService.AddDays(-1);
+    }
+}
