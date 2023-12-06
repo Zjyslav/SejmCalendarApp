@@ -40,6 +40,12 @@
                         <div class="d-inline mx-3 pt-2 w-100">
                             <p class="h4 text-center">@mp.record.FirstLastName</p>
                             <p>@mp.record.BirthDate.AgeToday().AgeText()</p>
+                            @if(String.IsNullOrWhiteSpace(mp.record.Email) == false && dateService.Date.Date == DateTime.Now.Date)
+                            {
+                                <a role="button" class="btn btn-primary" href="@($"mailto:{mp.record.Email}")">
+                                    Złóż życzenia
+                                </a>
+                            }
                         </div>
                         
                     </div>
