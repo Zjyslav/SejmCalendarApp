@@ -32,13 +32,13 @@
     else if(mps.Count == 0)
     {
         <p class="text-center">
-            Dziś urodzin nie obchodzi żaden poseł lub posłanka Sejmu RP <span>@Term</span>. kadencji.
+            @((dateService.Date.Date == DateTime.Now.Date) ? "Dziś" : "Tego dnia") urodzin nie obchodzi żaden poseł lub posłanka Sejmu RP <span>@Term</span>. kadencji.
         </p>
     }
     else
     {
         <p class="text-center">
-            Dziś urodziny obchodzą:
+            @((dateService.Date.Date == DateTime.Now.Date) ? "Dziś" : "Tego dnia") urodziny obchodzą:
             <div class="text-center d-lg-flex justify-content-center flex-wrap">
                 @foreach(var mp in mps)
                 {
