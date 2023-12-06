@@ -3,6 +3,7 @@
 @using SejmCalendar.Library.DataAccess
 @inject IBirthdayService birthdayService
 @inject IDateService dateService
+@inject ILogger<TodayPanel> logger
 @rendermode InteractiveServer
 
 <div class="container rounded bg-light p-4 my-4 text-dark" data-bs-theme="light">
@@ -76,7 +77,14 @@
 
         if (Term != 0 && birthdayService.SejmMPs.Count == 0)
         {
-            await birthdayService.LoadSejmMPsByTermId(Term);
+            try
+            {
+                await birthdayService.LoadSejmMPsByTermId(Term);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error: {message}\n{trace}", ex.Message, ex.StackTrace);
+            }
         }
 
         LoadBirthdays();

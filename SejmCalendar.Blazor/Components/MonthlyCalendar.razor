@@ -3,6 +3,7 @@
 @using System.Globalization
 @inject IBirthdayService birthdayService
 @inject IDateService dateService
+@inject ILogger<MonthlyCalendar> logger
 @rendermode InteractiveServer
 
 <div class="container rounded bg-light p-4" data-bs-theme="light">
@@ -90,7 +91,15 @@
 
         if (Term != 0 && birthdayService.SejmMPs.Count == 0)
         {
-            await birthdayService.LoadSejmMPsByTermId(Term);
+            try
+            {
+                await birthdayService.LoadSejmMPsByTermId(Term);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error: {message}\n{trace}", ex.Message, ex.StackTrace);
+            }
+
         }
 
         GenerateDays();
