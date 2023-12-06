@@ -60,8 +60,10 @@
                     </div>
                     <div class="card-body h5 text-center">
                         <span class="badge
-                            @((day.SejmMPs.Count == 0) ? "text-bg-secondary" : "text-bg-primary")">
-                            @day.SejmMPs.Count
+                            @((day.SejmMPs.Count == 0) ? "text-bg-secondary"
+                                : ((day.Date.Date == DateTime.Now.Date) ? "text-bg-success"
+                                    : "text-bg-primary"))">
+                            Urodziny: @day.SejmMPs.Count
                             </span>
                     </div>                    
                 </div>
