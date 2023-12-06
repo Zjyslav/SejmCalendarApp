@@ -1,30 +1,39 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.Extensions.Logging;
+using System.Net.Http.Json;
 
 namespace SejmCalendar.Library.DataAccess;
 public class SejmDataAccess : ISejmDataAccess
 {
     private readonly HttpClient _httpClient;
+    private readonly ILogger<SejmDataAccess> _logger;
 
-    public SejmDataAccess(HttpClient httpClient)
+    public SejmDataAccess(HttpClient httpClient, ILogger<SejmDataAccess> logger)
     {
         _httpClient = httpClient;
+        _logger = logger;
     }
 
     public async Task<List<SejmTermRecord>> GetAllTerms()
     {
-        List<SejmTermRecord>? output = await _httpClient.GetFromJsonAsync<List<SejmTermRecord>>("sejm/term");
+        string requestUri = "sejm/term";
+        _logger.LogInformation("API request: {requestUri}", $"{_httpClient.BaseAddress}{requestUri}");
+        List<SejmTermRecord>? output = await _httpClient.GetFromJsonAsync<List<SejmTermRecord>>(requestUri);
         return output ?? new();
     }
 
     public async Task<List<SejmMPRecord>> GetAllMPsByTermId(int termId)
     {
-        List<SejmMPRecord>? output = await _httpClient.GetFromJsonAsync<List<SejmMPRecord>>($"sejm/term{termId}/MP");
+        string requestUri = $"sejm/term{termId}/MP";
+        _logger.LogInformation("API request: {requestUri}", $"{_httpClient.BaseAddress}{requestUri}");
+        List<SejmMPRecord>? output = await _httpClient.GetFromJsonAsync<List<SejmMPRecord>>(requestUri);
         return output ?? new();
     }
 
     public async Task<byte[]?> GetMpPhoto(int mpId, int termId)
     {
-        byte[]? output = await _httpClient.GetByteArrayAsync($"sejm/term{termId}/MP/{mpId}/photo");
+        string requestUri = $"sejm/term{termId}/MP/{mpId}/photo";
+        _logger.LogInformation("API request: {requestUri}", $"{_httpClient.BaseAddress}{requestUri}");
+        byte[]? output = await _httpClient.GetByteArrayAsync(requestUri);
 
         return output;
     }
